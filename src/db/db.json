@@ -5,9 +5,10 @@
     "sender": "MD. Xyz",
     "receiver": "MD. Tarek Jaman Labu",
     "destination": "Rangpur",
-    "status": "Created",
+    "status": "PENDING",
     "createdAt": "2025-09-18T10:35:54.468Z",
-    "updatedAt": "2025-09-18T10:35:54.468Z"
+    "updatedAt": "2025-09-18T10:35:54.468Z",
+    "ownerId": "user_32sdd8JyR7lVp1aVzdIKoJiGd51"
   },
   {
     "id": "pkg_1758191787249_ot08o6r",
@@ -15,8 +16,20 @@
     "sender": "MD. Fakrul Alam",
     "receiver": "MD. Tarek Jaman Labu",
     "destination": "Thakurgaon",
-    "status": "Created",
+    "status": "SHIPPED",
     "createdAt": "2025-09-18T10:36:27.249Z",
-    "updatedAt": "2025-09-18T10:36:27.249Z"
+    "updatedAt": "2025-09-18T18:42:33.045Z",
+    "ownerId": "user_32sdd8JyR7lVp1aVzdIKoJiGd51"
+  },
+  {
+    "id": "pkg_1758218748003_2bqagtu",
+    "trackingNumber": "PKG-1758218748003",
+    "sender": "Mr. X",
+    "receiver": "Md. Tarek Jaman Labu",
+    "destination": "Rangpur",
+    "status": "PENDING",
+    "createdAt": "2025-09-18T18:05:48.003Z",
+    "updatedAt": "2025-09-18T18:05:48.003Z",
+    "ownerId": "user_32sdd8JyR7lVp1aVzdIKoJiGd51"
   }
 ]

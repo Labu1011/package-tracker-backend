@@ -18,6 +18,7 @@ export const typeDefs = gql`
     sender: String!
     receiver: String!
     destination: String!
+    userId: String!
   }
 
   type Query {
@@ -30,8 +31,9 @@ export const typeDefs = gql`
       sender: String!
       receiver: String!
       destination: String!
+      userId: String!
     ): Package!
 
-    updatePackageStatus(id: ID!, status: String!, location: String): Package
+    updatePackageStatus(id: String!, status: String!, location: String): Package
   }
 `

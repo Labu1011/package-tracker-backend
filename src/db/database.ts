@@ -10,6 +10,7 @@ export type PackageRecord = {
   status: string
   createdAt: string
   updatedAt: string
+  ownerId?: string
 }
 
 const DB_PATH = path.join(__dirname, "db.json")

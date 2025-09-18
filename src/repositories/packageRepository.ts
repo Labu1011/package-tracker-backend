@@ -5,15 +5,24 @@ export const PackageRepository = {
     return readDb()
   },
 
+  findAllByOwner(ownerId: string): PackageRecord[] {
+    return readDb().filter((p) => p.ownerId === ownerId)
+  },
+
   findByTrackingNumber(trackingNumber: string): PackageRecord | undefined {
     return readDb().find((p) => p.trackingNumber === trackingNumber)
+  },
+
+  findById(id: string): PackageRecord | undefined {
+    return readDb().find((p) => p.id === id)
   },
 
   create(
     trackingNumber: string,
     sender: string,
     receiver: string,
-    destination: string
+    destination: string,
+    ownerId: string
   ): PackageRecord {
     const db = readDb()
     const now = new Date().toISOString()
@@ -23,9 +32,10 @@ export const PackageRepository = {
       sender,
       receiver,
       destination,
-      status: "Created",
+      status: "Pending",
       createdAt: now,
       updatedAt: now,
+      ownerId,
     }
     db.push(newPkg)
     writeDb(db)
