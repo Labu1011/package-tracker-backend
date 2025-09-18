@@ -1,19 +1,31 @@
 import "dotenv/config"
 import express, { Request, Response } from "express"
+import { ApolloServer } from "apollo-server-express"
 import { clerkMiddleware, requireAuth } from "@clerk/express"
+import { typeDefs } from "./graphql/typeDefs"
+import { resolvers } from "./graphql/resolvers"
 
-const app = express()
-const port = process.env.PORT || 3000
+async function startServer() {
+  const app = express()
+  const port = process.env.PORT || 3000
 
-app.use(clerkMiddleware())
+  const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers,
+    context: ({ req }) => {
+      return {}
+    },
+  })
+  await server.start()
+  server.applyMiddleware({ app, path: "/graphql" })
 
-app.get("/", (req: Request, res: Response) => {
-  res.json({ message: "Hello World!" })
-})
-app.get("/msg", requireAuth(), (req: Request, res: Response) => {
-  res.json({ message: "Hello msg!" })
-})
+  app.get("/", (req: Request, res: Response) => {
+    res.json({ message: "Hello World!" })
+  })
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
-})
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`)
+  })
+}
+
+startServer()
