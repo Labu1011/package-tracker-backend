@@ -64,11 +64,14 @@ export const PackageRepository = {
       updatedAt: new Date().toISOString(),
     }
     writeDb(db)
-    pubsub.publish(`${PACKAGE_UPDATED}_${id}`, { packageUpdated: db[idx] })
+    pubsub.publish(PACKAGE_UPDATED, { packageUpdated: db[idx] })
     return db[idx]
   },
 
-  updateStatus(trackingNumber: string, status: PackageStatus): PackageRecord | null {
+  updateStatus(
+    trackingNumber: string,
+    status: PackageStatus
+  ): PackageRecord | null {
     const db = readDb()
     const idx = db.findIndex((p) => p.trackingNumber === trackingNumber)
     if (idx === -1) return null
@@ -93,7 +96,7 @@ export const PackageRepository = {
       : [entry]
     db[idx] = { ...prev, status, updatedAt: entry.date, history }
     writeDb(db)
-    pubsub.publish(`${PACKAGE_UPDATED}_${id}`, { packageUpdated: db[idx] })
+    pubsub.publish(PACKAGE_UPDATED, { packageUpdated: db[idx] })
     return db[idx]
   },
 }

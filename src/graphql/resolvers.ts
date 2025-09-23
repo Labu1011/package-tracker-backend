@@ -9,8 +9,7 @@ const PACKAGE_UPDATED = "PACKAGE_UPDATED"
 export const resolvers = {
   Subscription: {
     packageUpdated: {
-      subscribe: (_: any, { id }: { id: string }) =>
-        (pubsub as any).asyncIterator(`${PACKAGE_UPDATED}_${id}`),
+      subscribe: () => pubsub.asyncIterableIterator([PACKAGE_UPDATED]),
     },
   },
   Query: {
