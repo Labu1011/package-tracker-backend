@@ -1,6 +1,7 @@
 import { readDb, writeDb, PackageRecord } from "../db/database"
 import { STATION_COORDINATES, Station } from "./stations"
 import { pubsub } from "../graphql/pubsub"
+import { PackageStatus } from "../types/packageType"
 const PACKAGE_UPDATED = "PACKAGE_UPDATED"
 
 export const PackageRepository = {
@@ -38,8 +39,8 @@ export const PackageRepository = {
       sender,
       receiver,
       destination,
-      status: "PENDING",
-      history: [{ status: "PENDING", date: now }],
+      status: PackageStatus.PENDING,
+      history: [{ status: PackageStatus.PENDING, date: now }],
       createdAt: now,
       updatedAt: now,
       ownerId,
@@ -67,7 +68,7 @@ export const PackageRepository = {
     return db[idx]
   },
 
-  updateStatus(trackingNumber: string, status: string): PackageRecord | null {
+  updateStatus(trackingNumber: string, status: PackageStatus): PackageRecord | null {
     const db = readDb()
     const idx = db.findIndex((p) => p.trackingNumber === trackingNumber)
     if (idx === -1) return null
@@ -81,7 +82,7 @@ export const PackageRepository = {
     return db[idx]
   },
 
-  updateStatusById(id: string, status: string): PackageRecord | null {
+  updateStatusById(id: string, status: PackageStatus): PackageRecord | null {
     const db = readDb()
     const idx = db.findIndex((p) => p.id === id)
     if (idx === -1) return null

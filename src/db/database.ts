@@ -18,14 +18,13 @@ export type PackageRecord = {
   sender: string
   receiver: string
   destination: string
-  status: string
+  status: PackageStatus
   history?: HistoryRecord[]
   createdAt: string
   updatedAt: string
   ownerId?: string
   station?: string
   coordinates?: Coordinates
-  history?: StatusHistoryEntry[]
 }
 
 export type Coordinates = {
