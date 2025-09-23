@@ -1,5 +1,7 @@
 import { readDb, writeDb, PackageRecord } from "../db/database"
 import { STATION_COORDINATES, Station } from "./stations"
+import { pubsub } from "../graphql/pubsub"
+const PACKAGE_UPDATED = "PACKAGE_UPDATED"
 
 export const PackageRepository = {
   findAll(): PackageRecord[] {
@@ -37,6 +39,7 @@ export const PackageRepository = {
       receiver,
       destination,
       status: "PENDING",
+      history: [{ status: "PENDING", date: now }],
       createdAt: now,
       updatedAt: now,
       ownerId,
@@ -60,6 +63,7 @@ export const PackageRepository = {
       updatedAt: new Date().toISOString(),
     }
     writeDb(db)
+    pubsub.publish(`${PACKAGE_UPDATED}_${id}`, { packageUpdated: db[idx] })
     return db[idx]
   },
 
@@ -67,7 +71,12 @@ export const PackageRepository = {
     const db = readDb()
     const idx = db.findIndex((p) => p.trackingNumber === trackingNumber)
     if (idx === -1) return null
-    db[idx] = { ...db[idx], status, updatedAt: new Date().toISOString() }
+    const prev = db[idx]
+    const entry = { status, date: new Date().toISOString() }
+    const history = Array.isArray(prev.history)
+      ? [...prev.history, entry]
+      : [entry]
+    db[idx] = { ...prev, status, updatedAt: entry.date, history }
     writeDb(db)
     return db[idx]
   },
@@ -76,8 +85,14 @@ export const PackageRepository = {
     const db = readDb()
     const idx = db.findIndex((p) => p.id === id)
     if (idx === -1) return null
-    db[idx] = { ...db[idx], status, updatedAt: new Date().toISOString() }
+    const prev = db[idx]
+    const entry = { status, date: new Date().toISOString() }
+    const history = Array.isArray(prev.history)
+      ? [...prev.history, entry]
+      : [entry]
+    db[idx] = { ...prev, status, updatedAt: entry.date, history }
     writeDb(db)
+    pubsub.publish(`${PACKAGE_UPDATED}_${id}`, { packageUpdated: db[idx] })
     return db[idx]
   },
 }

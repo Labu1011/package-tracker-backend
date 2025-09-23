@@ -7,6 +7,11 @@ export type HistoryRecord = {
   date: string
 }
 
+export type StatusHistoryEntry = {
+  status: string
+  date: string
+}
+
 export type PackageRecord = {
   id: string
   trackingNumber: string
@@ -20,6 +25,7 @@ export type PackageRecord = {
   ownerId?: string
   station?: string
   coordinates?: Coordinates
+  history?: StatusHistoryEntry[]
 }
 
 export type Coordinates = {

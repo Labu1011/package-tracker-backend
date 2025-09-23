@@ -1,6 +1,9 @@
 import { gql } from "apollo-server-express"
 
 export const typeDefs = gql`
+  type Subscription {
+    packageUpdated(id: String!): Package
+  }
   enum Station {
     ELENGA
     SIRAJGONJ

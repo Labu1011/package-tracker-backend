@@ -1,9 +1,18 @@
 import { PackageRepository } from "../repositories/packageRepository"
 import { Station } from "../repositories/stations"
+import { pubsub } from "./pubsub"
 
 type Ctx = { userId: string | null; isAdmin: boolean }
 
+const PACKAGE_UPDATED = "PACKAGE_UPDATED"
+
 export const resolvers = {
+  Subscription: {
+    packageUpdated: {
+      subscribe: (_: any, { id }: { id: string }) =>
+        (pubsub as any).asyncIterator(`${PACKAGE_UPDATED}_${id}`),
+    },
+  },
   Query: {
     getPackages: (_: any, __: any, ctx: Ctx) => {
       if (!ctx.userId) throw new Error("Unauthorized")
