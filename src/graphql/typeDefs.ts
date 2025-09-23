@@ -24,15 +24,22 @@ export const typeDefs = gql`
     lng: Float!
   }
 
+  type HistoryRecord {
+    status: PackageStatus!
+    date: String!
+  }
+
   type Package {
     id: String!
     trackingNumber: String!
-    status: PackageStatus!
-    history: [PackageStatus!]!
     sender: String!
     receiver: String!
     destination: String!
-    userId: String!
+    status: PackageStatus!
+    history: [HistoryRecord!]
+    createdAt: String!
+    updatedAt: String!
+    ownerId: String
     station: Station
     coordinates: Coordinates
   }
@@ -48,7 +55,7 @@ export const typeDefs = gql`
       sender: String!
       receiver: String!
       destination: String!
-      userId: String!
+      ownerId: String!
       station: Station
     ): Package!
 
