@@ -14,6 +14,14 @@ export const resolvers = {
       if (!ctx.userId) throw new Error("Unauthorized")
       return PackageRepository.findById(id)
     },
+    getPackageByTrackingNumber: (
+      _: any,
+      { trackingNumber }: { trackingNumber: string },
+      ctx: Ctx
+    ) => {
+      if (!ctx.userId) throw new Error("Unauthorized")
+      return PackageRepository.findByTrackingNumber(trackingNumber)
+    },
   },
 
   Mutation: {

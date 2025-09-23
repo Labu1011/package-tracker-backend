@@ -23,7 +23,8 @@ export const typeDefs = gql`
 
   type Query {
     getPackages: [Package!]
-    getPackage(trackingNumber: String!): Package
+    getPackage(id: String!): Package
+    getPackageByTrackingNumber(trackingNumber: String!): Package
   }
 
   type Mutation {
