@@ -1,6 +1,11 @@
 import fs from "fs"
 import path from "path"
 
+export type StatusHistoryEntry = {
+  status: string
+  date: string
+}
+
 export type PackageRecord = {
   id: string
   trackingNumber: string
@@ -13,6 +18,7 @@ export type PackageRecord = {
   ownerId?: string
   station?: string
   coordinates?: Coordinates
+  history?: StatusHistoryEntry[]
 }
 
 export type Coordinates = {
