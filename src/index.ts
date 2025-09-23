@@ -1,19 +1,34 @@
 import "dotenv/config"
 import express, { Request, Response } from "express"
+import cors from "cors"
 import { ApolloServer } from "apollo-server-express"
-import { clerkMiddleware, getAuth, requireAuth } from "@clerk/express"
+import { makeExecutableSchema } from "@graphql-tools/schema"
+import { clerkMiddleware, getAuth } from "@clerk/express"
 import { typeDefs } from "./graphql/typeDefs"
 import { resolvers } from "./graphql/resolvers"
+import { createServer } from "http"
+import { WebSocketServer } from "ws"
+import { useServer } from "graphql-ws/use/ws"
 
 async function startServer() {
   const app = express()
   const port = process.env.PORT || 8000
 
+  const corsOptions: cors.CorsOptions = {
+    origin: true,
+    credentials: true,
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }
+
+  app.use(cors(corsOptions))
+  app.options("/graphql", cors(corsOptions))
   app.use(clerkMiddleware())
 
+  const schema = makeExecutableSchema({ typeDefs, resolvers })
+
   const server = new ApolloServer({
-    typeDefs: typeDefs,
-    resolvers: resolvers,
+    schema,
     context: ({ req }) => {
       const auth = getAuth(req)
       const userId = auth.userId ?? null
@@ -31,14 +46,35 @@ async function startServer() {
     },
   })
   await server.start()
-  server.applyMiddleware({ app, path: "/graphql" })
+
+  // Create HTTP server and WebSocket server
+  const httpServer = createServer(app)
+  server.applyMiddleware({ app, path: "/graphql", cors: false })
+
+  // Set up graphql-ws WebSocket server
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/graphql",
+  })
+
+  useServer(
+    {
+      schema,
+      context: async (ctx, msg, args) => {
+        // Optionally add auth context for subscriptions here
+        return {}
+      },
+    },
+    wsServer
+  )
 
   app.get("/", (req: Request, res: Response) => {
     res.json({ message: "Hello World!" })
   })
 
-  app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
+  httpServer.listen(port, () => {
+    console.log(`🚀 Server ready at http://localhost:${port}/graphql`)
+    console.log(`🚀 Subscriptions ready at ws://localhost:${port}/graphql`)
   })
 }
 

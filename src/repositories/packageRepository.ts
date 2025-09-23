@@ -1,5 +1,8 @@
 import { readDb, writeDb, PackageRecord } from "../db/database"
 import { STATION_COORDINATES, Station } from "./stations"
+import { pubsub } from "../graphql/pubsub"
+import { PackageStatus } from "../types/packageType"
+const PACKAGE_UPDATED = "PACKAGE_UPDATED"
 
 export const PackageRepository = {
   findAll(): PackageRecord[] {
@@ -36,7 +39,8 @@ export const PackageRepository = {
       sender,
       receiver,
       destination,
-      status: "PENDING",
+      status: PackageStatus.PENDING,
+      history: [{ status: PackageStatus.PENDING, date: now }],
       createdAt: now,
       updatedAt: now,
       ownerId,
@@ -60,24 +64,39 @@ export const PackageRepository = {
       updatedAt: new Date().toISOString(),
     }
     writeDb(db)
+    pubsub.publish(PACKAGE_UPDATED, { packageUpdated: db[idx] })
     return db[idx]
   },
 
-  updateStatus(trackingNumber: string, status: string): PackageRecord | null {
+  updateStatus(
+    trackingNumber: string,
+    status: PackageStatus
+  ): PackageRecord | null {
     const db = readDb()
     const idx = db.findIndex((p) => p.trackingNumber === trackingNumber)
     if (idx === -1) return null
-    db[idx] = { ...db[idx], status, updatedAt: new Date().toISOString() }
+    const prev = db[idx]
+    const entry = { status, date: new Date().toISOString() }
+    const history = Array.isArray(prev.history)
+      ? [...prev.history, entry]
+      : [entry]
+    db[idx] = { ...prev, status, updatedAt: entry.date, history }
     writeDb(db)
     return db[idx]
   },
 
-  updateStatusById(id: string, status: string): PackageRecord | null {
+  updateStatusById(id: string, status: PackageStatus): PackageRecord | null {
     const db = readDb()
     const idx = db.findIndex((p) => p.id === id)
     if (idx === -1) return null
-    db[idx] = { ...db[idx], status, updatedAt: new Date().toISOString() }
+    const prev = db[idx]
+    const entry = { status, date: new Date().toISOString() }
+    const history = Array.isArray(prev.history)
+      ? [...prev.history, entry]
+      : [entry]
+    db[idx] = { ...prev, status, updatedAt: entry.date, history }
     writeDb(db)
+    pubsub.publish(PACKAGE_UPDATED, { packageUpdated: db[idx] })
     return db[idx]
   },
 }

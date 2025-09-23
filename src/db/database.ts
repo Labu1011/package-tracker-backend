@@ -1,5 +1,16 @@
 import fs from "fs"
 import path from "path"
+import { PackageStatus } from "../types/packageType"
+
+export type HistoryRecord = {
+  status: PackageStatus
+  date: string
+}
+
+export type StatusHistoryEntry = {
+  status: string
+  date: string
+}
 
 export type PackageRecord = {
   id: string
@@ -7,7 +18,8 @@ export type PackageRecord = {
   sender: string
   receiver: string
   destination: string
-  status: string
+  status: PackageStatus
+  history?: HistoryRecord[]
   createdAt: string
   updatedAt: string
   ownerId?: string
