@@ -1,6 +1,15 @@
 import { gql } from "apollo-server-express"
 
 export const typeDefs = gql`
+  enum Station {
+    ELENGA
+    SIRAJGONJ
+    SHERPUR
+    BOGURA
+    POLASHBARI
+    RANGPUR_HUB
+  }
+
   enum PackageStatus {
     PENDING
     CONFIRMED
@@ -8,6 +17,11 @@ export const typeDefs = gql`
     SHIPPED
     OUT_FOR_DELIVERY
     DELIVERED
+  }
+
+  type Coordinates {
+    lat: Float!
+    lng: Float!
   }
 
   type Package {
@@ -19,6 +33,8 @@ export const typeDefs = gql`
     receiver: String!
     destination: String!
     userId: String!
+    station: Station
+    coordinates: Coordinates
   }
 
   type Query {
@@ -33,8 +49,10 @@ export const typeDefs = gql`
       receiver: String!
       destination: String!
       userId: String!
+      station: Station
     ): Package!
 
     updatePackageStatus(id: String!, status: String!, location: String): Package
+    updatePackageStation(id: String!, station: Station!): Package
   }
 `

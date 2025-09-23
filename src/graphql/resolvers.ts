@@ -1,4 +1,5 @@
 import { PackageRepository } from "../repositories/packageRepository"
+import { Station } from "../repositories/stations"
 
 type Ctx = { userId: string | null; isAdmin: boolean }
 
@@ -49,6 +50,14 @@ export const resolvers = {
         destination,
         userId
       )
+    },
+    updatePackageStation: (
+      _: any,
+      { id, station }: { id: string; station: string },
+      ctx: Ctx
+    ) => {
+      if (!ctx.isAdmin) throw new Error("Forbidden")
+      return PackageRepository.updatePackageStation(id, station as Station)
     },
     updatePackageStatus: (
       _: any,

@@ -6,6 +6,19 @@ export enum PackageStatus {
   OUT_FOR_DELIVERY,
   DELIVERED,
 }
+export enum Station {
+  ELENGA,
+  SIRAJGONJ,
+  SHERPUR,
+  BOGURA,
+  POLASHBARI,
+  RANGPUR_HUB,
+}
+
+export type Coordinates = {
+  lat: number
+  lng: number
+}
 
 export interface PackageRow {
   id: number
@@ -15,6 +28,7 @@ export interface PackageRow {
   sender: string
   receiver: string
   destination: string
+  coordinates: Coordinates
 }
 
 export interface Package {
@@ -25,4 +39,5 @@ export interface Package {
   sender: string
   receiver: string
   destination: string
+  coordinates: Coordinates
 }

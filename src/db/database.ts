@@ -11,6 +11,13 @@ export type PackageRecord = {
   createdAt: string
   updatedAt: string
   ownerId?: string
+  station?: string
+  coordinates?: Coordinates
+}
+
+export type Coordinates = {
+  lat: number
+  lng: number
 }
 
 const DB_PATH = path.join(__dirname, "db.json")
