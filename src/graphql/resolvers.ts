@@ -1,5 +1,6 @@
 import { PackageRepository } from "../repositories/packageRepository"
 import { Station } from "../repositories/stations"
+import { PackageStatus } from "../types/packageType";
 import { pubsub } from "./pubsub"
 
 type Ctx = { userId: string | null; isAdmin: boolean }
@@ -41,12 +42,12 @@ export const resolvers = {
         sender,
         receiver,
         destination,
-        userId,
+        ownerId,
       }: {
         sender: string
         receiver: string
         destination: string
-        userId: string
+        ownerId: string
       },
       ctx: Ctx
     ) => {
@@ -57,7 +58,7 @@ export const resolvers = {
         sender,
         receiver,
         destination,
-        userId
+        ownerId
       )
     },
     updatePackageStation: (
@@ -70,7 +71,7 @@ export const resolvers = {
     },
     updatePackageStatus: (
       _: any,
-      { id, status }: { id: string; status: string },
+      { id, status }: { id: string; status: PackageStatus },
       ctx: Ctx
     ) => {
       if (!ctx.isAdmin) throw new Error("Forbidden")

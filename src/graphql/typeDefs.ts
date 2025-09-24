@@ -42,7 +42,7 @@ export const typeDefs = gql`
     history: [HistoryRecord!]
     createdAt: String!
     updatedAt: String!
-    ownerId: String
+    ownerId: String!
     station: Station
     coordinates: Coordinates
   }
